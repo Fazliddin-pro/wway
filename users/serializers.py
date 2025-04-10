@@ -15,7 +15,6 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Account is inactive')
         data['user'] = user
         return data
-    
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -34,3 +33,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'phone_number', 'full_name', 'age',
+            'avatar', 'gender', 'role', 'is_teacher', 'bio',
+            'is_active', 'is_staff'
+        ]

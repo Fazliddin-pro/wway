@@ -1,20 +1,23 @@
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.contrib.auth import get_user_model
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from .serializers import LoginSerializer, RegisterSerializer
 
-class CustomAuthToken(ObtainAuthToken):
-    def post(self, request, *args, **kwargs):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        if not email or not password:
-            return Response({'error': 'Email and password are required'}, status=400)
-
-        user = get_user_model().objects.filter(email=email).first()
-
-        if user and user.check_password(password):
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
             token, _ = Token.objects.get_or_create(user=user)
             return Response({'token': token.key})
-        
-        return Response({'error': 'Invalid credentials'}, status=400)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Успешная регистрация'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

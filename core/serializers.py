@@ -15,20 +15,16 @@ class CourseSerializer(serializers.ModelSerializer):
             'id', 'title', 'description',
             'category', 'level', 'accessibility_features', 'created_at', 'instructor'
         ]
-        read_only_fields = ['instructor']
-
-    def validate_instructor(self, value):
-            if value.profile.status == 'student':
-                raise ValidationError("A course cannot be created by a user with 'student' status.")
-            return value
+        read_only_fields = ['id', 'created_at', 'instructor']
 
 class ModuleSerializer(serializers.ModelSerializer):
     course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
-    course_title = serializers.SerializerMethodField()
+    course_title = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Module
         fields = ['id', 'title', 'description', 'course', 'course_title', 'order', 'start_date', 'end_date']
+        read_only_fields = ['id', 'course_title']
 
     def get_course_title(self, obj):
         return str(obj.course) if obj.course else None
@@ -42,6 +38,7 @@ class LessonSerializer(serializers.ModelSerializer):
             'id', 'title', 'content', 'module',
             'lesson_type', 'duration', 'accessibility_features'
         ]
+        read_only_fields = ['id']
 
 class AssignmentSerializer(serializers.ModelSerializer):
     lesson = LessonSerializer(read_only=True)
@@ -51,6 +48,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'lesson', 'title', 'description', 'due_date'
         ]
+        read_only_fields = ['id']
 
 class SubmissionSerializer(serializers.ModelSerializer):
     assignment = AssignmentSerializer(read_only=True)
@@ -62,6 +60,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
             'id', 'assignment', 'student',
             'submitted_file', 'submission_date', 'status'
         ]
+        read_only_fields = ['id', 'submission_date']
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -73,6 +72,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
             'id', 'user', 'course',
             'enrollment_date', 'progress', 'needs_accessibility_support'
         ]
+        read_only_fields = ['id', 'enrollment_date']
 
 class LessonProgressSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -84,6 +84,7 @@ class LessonProgressSerializer(serializers.ModelSerializer):
             'id', 'user', 'lesson',
             'status', 'completion_date', 'time_spent'
         ]
+        read_only_fields = ['id']
 
 class CertificateSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -95,6 +96,7 @@ class CertificateSerializer(serializers.ModelSerializer):
             'id', 'user', 'course',
             'issue_date', 'certificate_number', 'accessibility_features'
         ]
+        read_only_fields = ['id', 'issue_date']
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
@@ -107,3 +109,4 @@ class MessageSerializer(serializers.ModelSerializer):
             'content', 'timestamp', 'read_status',
             'via_telegram', 'telegram_message_id'
         ]
+        read_only_fields = ['id', 'timestamp']

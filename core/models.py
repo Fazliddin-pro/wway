@@ -12,8 +12,8 @@ class Course(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
-        if self.instructor.role == 'student':
-            raise ValidationError("A course cannot be created by a user with 'student' status.")
+        if self.instructor.role != 'admin':
+            raise ValidationError("Only instructors (admins) can create a course.")
 
     def __str__(self):
         return self.title

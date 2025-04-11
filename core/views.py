@@ -20,7 +20,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user and request.user.is_staff
+        return request.user and request.user.is_authenticated and request.user.role == 'admin'
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
@@ -79,6 +79,9 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     ordering_fields = ['submission_date', 'status']
     ordering = ['submission_date']
 
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
+
 class EnrollmentViewSet(viewsets.ModelViewSet):
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
@@ -88,6 +91,9 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
     filterset_fields = ['user', 'course']
     ordering_fields = ['enrollment_date', 'progress']
     ordering = ['enrollment_date']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class LessonProgressViewSet(viewsets.ModelViewSet):
     queryset = LessonProgress.objects.all()
@@ -99,6 +105,9 @@ class LessonProgressViewSet(viewsets.ModelViewSet):
     ordering_fields = ['completion_date', 'time_spent']
     ordering = ['completion_date']
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 class CertificateViewSet(viewsets.ModelViewSet):
     queryset = Certificate.objects.all()
     serializer_class = CertificateSerializer
@@ -108,6 +117,9 @@ class CertificateViewSet(viewsets.ModelViewSet):
     filterset_fields = ['user', 'course']
     ordering_fields = ['issue_date', 'certificate_number']
     ordering = ['issue_date']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
@@ -119,3 +131,6 @@ class MessageViewSet(viewsets.ModelViewSet):
     search_fields = ['content']
     ordering_fields = ['timestamp', 'read_status']
     ordering = ['timestamp']
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)

@@ -5,22 +5,22 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Wway Education Platform API",
+        title="WisdomWay Education Platform API",
         default_version="v1.0",
         description=(
-            "Welcome to the official API documentation for the **Wway Education Platform**.\n\n"
+            "Welcome to the official API documentation for the **WisdomWay Education Platform**.\n\n"
             "This API allows developers to interact with core features such as course management, "
             "user authentication, module handling, and more."
         ),
-        # terms_of_service="https://www.wway.com/terms/",
-        terms_of_service="https://www.wway.com/",
+        # terms_of_service="https://www.wway.uz/terms/",
+        terms_of_service="https://www.wway.uz/",
         contact=openapi.Contact(
             name="Wway Support Team",
             email="support@wway.com",
-            # url="https://www.wway.com/contact/"
-            url="https://www.wway.com/"
+            # url="https://www.wway.uz/contact/"
+            url="https://t.me/FazlCode"
         ),
-        license=openapi.License(name="MIT License"),
+        license=openapi.License(name="Proprietary License"),
     ),
     public=True,
     permission_classes=[permissions.AllowAny],

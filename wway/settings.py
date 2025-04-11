@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'silk',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_yasg',
     'users',
     'core',
 ]

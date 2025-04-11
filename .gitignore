@@ -27,10 +27,7 @@ __pycache__/
 .pyc
 *.pyc
 
-!*media
-media/*
-/static/
-media/
+
 
 log/debug.log
 

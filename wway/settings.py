@@ -15,7 +15,7 @@ from decouple import config
 import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_filters',
     'corsheaders',
-    'silk',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
@@ -61,15 +60,15 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-if DEBUG:
-    MIDDLEWARE += ['silk.middleware.SilkyMiddleware']
-
 INTERNAL_IPS = [
     '127.0.0.1',
+    '52.41.36.82',
+    '54.191.253.12',
+    '44.226.122.3',
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'https://mrfazld.pythonanywhere.com',
+    'https://wway.onrender.com',
     'https://www.wway.uz',
 ]
 
@@ -154,7 +153,7 @@ AUTH_USER_MODEL = 'users.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
 }
 

@@ -29,16 +29,58 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password')
+        validated_data['role'] = 'student'
         user = User.objects.create_user(**validated_data)
         user.set_password(password)
         user.save()
         return user
 
+    def validate(self, data):
+        if 'role' in data or 'is_staff' in data or 'is_superuser' in data:
+            raise serializers.ValidationError("You can't set role or permissions directly.")
+        return data
+
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
         fields = [
-            'id', 'email', 'phone_number', 'full_name', 'age',
-            'avatar', 'gender', 'role', 'is_teacher', 'bio',
-            'is_active', 'is_staff'
+            'id', 'email', 'password', 'phone_number', 'full_name', 'age', 'avatar',
+            'gender', 'role', 'bio', 'is_active', 'created_at', 'updated_at'
         ]
+        read_only_fields = ('id', 'created_at', 'updated_at')
+        extra_kwargs = {
+            'role': {'read_only': True},
+            'is_active': {'read_only': True},
+        }
+
+    def validate_password(self, value):
+        try:
+            validate_password(value)
+        except serializers.ValidationError as e:
+            raise serializers.ValidationError(f"Пароль недостаточно надежный: {e}")
+        return value
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        validated_data.setdefault('role', 'student')
+        user = User.objects.create_user(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'phone_number', 'full_name', 'age', 'avatar',
+            'gender', 'role', 'bio', 'is_active', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ('id', 'created_at', 'updated_at')
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance

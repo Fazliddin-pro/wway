@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Убираем скучные границы */
+fieldset, .module {
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    background-color: #ffffff;
+}
+
+/* Заголовки секций */
+h1, h2, h3, .module caption {
+    font-weight: 600;
+    color: #4F46E5; /* основной фиолетово-синий */
+}
+
+/* Таблицы */
+table {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Кнопки */
+button, input[type="submit"], .button {
+    background-color: #4F46E5 !important;
+    border-radius: 8px !important;
+    color: white !important;
+    padding: 8px 16px !important;
+    border: none !important;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+button:hover, input[type="submit"]:hover, .button:hover {
+    background-color: #4338ca !important;
+}
+
+/* Форма ввода */
+input[type="text"], input[type="email"], input[type="password"],
+select, textarea {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    transition: border-color 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #4F46E5;
+    outline: none;
+}
+
+/* Шапка админки */
+.navbar {
+    background-color: #4F46E5 !important;
+    border-bottom: none;
+}
+
+/* Лого и бренд */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Сайдбар */
+.sidebar {
+    background-color: #3730A3 !important;
+}
+
+.sidebar .nav-link.active {
+    background-color: #4F46E5 !important;
+    color: #fff !important;
+    border-radius: 6px;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #5B53E2 !important;
+    color: #fff !important;
+}
+
+/* Футер */
+.footer {
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 10px 0;
+    background-color: #F9FAFB;
+    color: #9CA3AF;
+}
+
+/* Стили для блока recent actions */
+.recent-actions {
+    max-height: 600px;  /* Ограничиваем максимальную высоту */
+    overflow-y: auto;   /* Добавляем вертикальную прокрутку */
+    padding-right: 20px; /* Немного отступа для прокрутки */
+}

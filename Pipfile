@@ -16,6 +16,7 @@ drf-yasg = "*"
 gunicorn = "*"
 whitenoise = "*"
 dj-database-url = "*"
+django-jazzmin = "*"
 
 [dev-packages]
 

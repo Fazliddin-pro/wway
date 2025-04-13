@@ -31,6 +31,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(' ')
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -183,4 +184,58 @@ LOGGING = {
             'style': '{',
         },
     },
+}
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Wway Admin",
+    "site_header": "Wway Administration",
+    "site_brand": "WisdomWay",
+    "site_logo": None,
+    "site_logo_classes": None,
+    "welcome_sign": "Welcome to the Wway admin panel",
+    "copyright": "Wway © 2025",
+
+    # Browser tab icon
+    "site_icon": None,
+
+    # Colors
+    "primary_color": "#4F46E5",  # violet-blue
+    "topmenu_links": [
+        {"name": "Home", "url": "/", "permissions": ["auth.view_user"]},
+        {"model": "auth.User"},
+        {"app": "learning"},
+    ],
+
+    # Left menu
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    "order_with_respect_to": ["learning", "auth", "users"],
+
+    # Custom styles
+    "custom_css": "css/admin-custom.css",  # create this file in static/css/
+    "custom_js": None,
+
+    # Model icons
+    "icons": {
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "learning.course": "fas fa-book",
+        "learning.module": "fas fa-layer-group",
+        "learning.lesson": "fas fa-chalkboard-teacher",
+        "learning.assignment": "fas fa-tasks",
+        "learning.submission": "fas fa-paper-plane",
+        "learning.enrollment": "fas fa-user-graduate",
+        "learning.lessonprogress": "fas fa-chart-line",
+        "learning.certificate": "fas fa-certificate",
+        "learning.message": "fas fa-envelope",
+    },
+
+    # Theme
+    "theme": "darkly",  # other options: cerulean, lux, united, cosmo
+    "dark_mode_theme": "cyborg",
+
+    # UI Builder section
+    "show_ui_builder": False,
 }

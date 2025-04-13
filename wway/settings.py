@@ -174,7 +174,7 @@ LOGGING = {
     'loggers': {
         '': {
             'handlers': ['console', 'file'],
-            'level': config('DJANGO_LOG_LEVEL', default='INFO'),
+            'level': config('DJANGO_LOG_LEVEL', default='ERROR'),
         },
     },
     'formatters': {

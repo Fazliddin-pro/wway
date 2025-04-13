@@ -13,7 +13,8 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = [
             'id', 'title', 'description',
-            'category', 'level', 'accessibility_features', 'created_at', 'instructor'
+            'category', 'level', 'accessibility_features',
+            'created_at', 'instructor'
         ]
         read_only_fields = ['id', 'created_at', 'instructor']
 
@@ -23,22 +24,29 @@ class ModuleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Module
-        fields = ['id', 'title', 'description', 'course', 'course_title', 'order', 'start_date', 'end_date']
+        fields = [
+            'id', 'title', 'description', 'course',
+            'course_title', 'order', 'start_date', 'end_date'
+        ]
         read_only_fields = ['id', 'course_title']
 
     def get_course_title(self, obj):
         return str(obj.course) if obj.course else None
 
 class LessonSerializer(serializers.ModelSerializer):
-    module = ModuleSerializer(read_only=True)
+    module = serializers.PrimaryKeyRelatedField(queryset=Module.objects.all())
+    module_title = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Lesson
         fields = [
-            'id', 'title', 'content', 'module',
-            'lesson_type', 'duration', 'accessibility_features'
+            'id', 'title', 'content', 'module', 'module_title',
+            'order', 'lesson_type', 'duration', 'accessibility_features'
         ]
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'module_title']
+
+    def get_module_title(self, obj):
+        return str(obj.module) if obj.module else None
 
 class AssignmentSerializer(serializers.ModelSerializer):
     lesson = LessonSerializer(read_only=True)

@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
+from django.core.exceptions import ValidationError
+from .validators import validate_avatar_size
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -33,12 +36,20 @@ GENDER_CHOICES = [
     ('F', 'Female'),
 ]
 
+phone_regex = RegexValidator(
+    regex=r'^\+998\d{9}$',
+    message="Enter a valid phone number in the format: +998XXXXXXXXX"
+)
+
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, verbose_name='Email')
-    phone_number = models.CharField(max_length=20, unique=True, verbose_name='Phone Number')
+    phone_number = models.CharField(max_length=20, unique=True, verbose_name='Phone Number',
+                                    validators=[phone_regex])
     full_name = models.CharField(max_length=255, verbose_name='Full Name')
-    age = models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Age')
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name='Avatar')
+    age = models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Age',
+                                           validators=[MinValueValidator(1), MaxValueValidator(101)])
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name='Avatar',
+                               validators=[validate_avatar_size])
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, verbose_name='Gender')
     role = models.CharField(max_length=10, choices=USER_ROLES, default='student', verbose_name='Role')
     bio = models.TextField(blank=True, null=True, verbose_name='Biography')
@@ -57,12 +68,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f'{self.full_name} ({self.email})'
     
+    def clean(self):
+        super().clean()
+        if self.age is not None and (self.age < 1 or self.age > 101):
+            raise ValidationError({'age': 'Enter a valid age between 1 and 101.'})
+    
     def save(self, *args, **kwargs):
         if self.role in ['student', 'teacher']:
             self.is_staff = False
             self.is_superuser = False
         elif self.role == 'admin' and not self.is_staff:
             self.is_staff = True
+        self.full_clean()
         super().save(*args, **kwargs)
 
     class Meta:

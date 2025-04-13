@@ -23,7 +23,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
         return request.user and request.user.is_authenticated and request.user.role == 'admin'
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
+    queryset = Course.objects.select_related('instructor').all()
     serializer_class = CourseSerializer
     permission_classes = [IsAdminOrReadOnly]
     pagination_class = StandardResultsSetPagination
@@ -37,7 +37,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer.save(instructor=self.request.user)
 
 class ModuleViewSet(viewsets.ModelViewSet):
-    queryset = Module.objects.all()
+    queryset = Module.objects.select_related('course').all()
     serializer_class = ModuleSerializer
     permission_classes = [IsAdminOrReadOnly]
     pagination_class = StandardResultsSetPagination
@@ -48,7 +48,7 @@ class ModuleViewSet(viewsets.ModelViewSet):
     ordering = ['start_date']
 
 class LessonViewSet(viewsets.ModelViewSet):
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.select_related('module').all()
     serializer_class = LessonSerializer
     permission_classes = [IsAdminOrReadOnly]
     pagination_class = StandardResultsSetPagination
@@ -56,10 +56,9 @@ class LessonViewSet(viewsets.ModelViewSet):
     filterset_fields = ['module']
     search_fields = ['title', 'content']
     ordering_fields = ['duration', 'start_date']
-    ordering = ['start_date']
 
 class AssignmentViewSet(viewsets.ModelViewSet):
-    queryset = Assignment.objects.all()
+    queryset = Assignment.objects.select_related('lesson').all()
     serializer_class = AssignmentSerializer
     permission_classes = [IsAdminOrReadOnly]
     pagination_class = StandardResultsSetPagination
@@ -70,7 +69,7 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     ordering = ['due_date']
 
 class SubmissionViewSet(viewsets.ModelViewSet):
-    queryset = Submission.objects.all()
+    queryset = Submission.objects.select_related('assignment', 'student').all()
     serializer_class = SubmissionSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
@@ -83,7 +82,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
         serializer.save(student=self.request.user)
 
 class EnrollmentViewSet(viewsets.ModelViewSet):
-    queryset = Enrollment.objects.all()
+    queryset = Enrollment.objects.select_related('user', 'course').all()
     serializer_class = EnrollmentSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
@@ -96,7 +95,7 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 class LessonProgressViewSet(viewsets.ModelViewSet):
-    queryset = LessonProgress.objects.all()
+    queryset = LessonProgress.objects.select_related('user', 'lesson').all()
     serializer_class = LessonProgressSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
@@ -109,7 +108,7 @@ class LessonProgressViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 class CertificateViewSet(viewsets.ModelViewSet):
-    queryset = Certificate.objects.all()
+    queryset = Certificate.objects.select_related('user', 'course').all()
     serializer_class = CertificateSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
@@ -122,7 +121,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
+    queryset = Message.objects.select_related('sender', 'receiver').all()
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination

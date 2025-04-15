@@ -50,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                            validators=[MinValueValidator(1), MaxValueValidator(101)])
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name='Avatar',
                                validators=[validate_avatar_size])
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, verbose_name='Gender')
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='M', verbose_name='Gender')
     role = models.CharField(max_length=10, choices=USER_ROLES, default='student', verbose_name='Role')
     bio = models.TextField(blank=True, null=True, verbose_name='Biography')
     

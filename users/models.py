@@ -17,6 +17,8 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
+        # Обеспечим, что суперюзер получает роль "admin"
+        extra_fields.setdefault('role', 'admin')
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         if extra_fields.get('is_staff') is not True:
@@ -45,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, verbose_name='Email')
     phone_number = models.CharField(max_length=20, unique=True, verbose_name='Phone Number',
                                     validators=[phone_regex])
-    full_name = models.CharField(max_length=255, verbose_name='Full Name')
+    full_name = models.CharField(max_length=255, blank=True, verbose_name='Full Name')
     age = models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Age',
                                            validators=[MinValueValidator(1), MaxValueValidator(101)])
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name='Avatar',
@@ -74,11 +76,11 @@ class User(AbstractBaseUser, PermissionsMixin):
             raise ValidationError({'age': 'Enter a valid age between 1 and 101.'})
     
     def save(self, *args, **kwargs):
-        if self.role in ['student', 'teacher']:
-            self.is_staff = False
-            self.is_superuser = False
-        elif self.role == 'admin' and not self.is_staff:
-            self.is_staff = True
+        if not self.is_superuser:
+            if self.role in ['student', 'teacher']:
+                self.is_staff = False
+            elif self.role == 'admin' and not self.is_staff:
+                self.is_staff = True
         self.full_clean()
         super().save(*args, **kwargs)
 

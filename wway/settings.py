@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(' ')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='wway-prod-7e5b9976f02e.herokuapp.com').split(' ')
 
 # Application definition
 

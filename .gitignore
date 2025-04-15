@@ -18,8 +18,6 @@ env/
 prod_settings.py
 local_settings.py
 
-*/migrations/*
-!*/migrations/__init__.py
 
 __pycache__/
 */__pycache__/

@@ -11,7 +11,7 @@ PROGRESS_STATUSES = [('not_started', 'Not Started'), ('in_progress', 'In Progres
 class Course(models.Model):
     title = models.CharField("Course Title", max_length=255)
     description = models.TextField("Course Description")
-    instructor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Instructor")
+    teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Teacher")
     category = models.CharField("Category", max_length=100)
     level = models.CharField("Level", max_length=50, blank=True, null=True)
     accessibility_features = models.TextField("Accessibility Features", blank=True, null=True)
@@ -23,8 +23,8 @@ class Course(models.Model):
         verbose_name_plural = "Courses"
 
     def clean(self):
-        if not getattr(self.instructor, 'role', None) == 'admin':
-            raise ValidationError("Only instructors (admins) can create a course.")
+        if not getattr(self.teacher, 'role', None) in ['admin', 'teacher']:
+            raise ValidationError("Only admins or teachers can create a course.")
         super().clean()
 
     def __str__(self):

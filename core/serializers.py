@@ -7,19 +7,25 @@ from .models import (
 from users.serializers import UserSerializer
 
 class CourseSerializer(serializers.ModelSerializer):
-    instructor = UserSerializer(read_only=True)
+    teacher = UserSerializer(read_only=True)
 
     class Meta:
         model = Course
         fields = [
             'id', 'title', 'description',
             'category', 'level', 'accessibility_features',
-            'created_at', 'instructor'
+            'created_at', 'teacher'
         ]
-        read_only_fields = ['id', 'created_at', 'instructor']
+        read_only_fields = ['id', 'created_at', 'teacher']
+
+    def validate(self, data):
+        if self.instance and 'teacher' in data:
+            if data['teacher'].role not in ['admin', 'teacher']:
+                raise serializers.ValidationError("Only admins or teachers can create courses")
+        return data
 
 class ModuleSerializer(serializers.ModelSerializer):
-    course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
+    course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), required=True)
     course_title = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -33,8 +39,14 @@ class ModuleSerializer(serializers.ModelSerializer):
     def get_course_title(self, obj):
         return str(obj.course) if obj.course else None
 
+    def validate(self, data):
+        if 'start_date' in data and 'end_date' in data:
+            if data['start_date'] > data['end_date']:
+                raise serializers.ValidationError("Start date cannot be later than end date")
+        return data
+
 class LessonSerializer(serializers.ModelSerializer):
-    module = serializers.PrimaryKeyRelatedField(queryset=Module.objects.all())
+    module = serializers.PrimaryKeyRelatedField(queryset=Module.objects.all(), required=True)
     module_title = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -47,6 +59,15 @@ class LessonSerializer(serializers.ModelSerializer):
 
     def get_module_title(self, obj):
         return str(obj.module) if obj.module else None
+
+    def validate(self, data):
+        if 'order' in data:
+            module = data.get('module', self.instance.module if self.instance else None)
+            if module:
+                existing_lessons = Lesson.objects.filter(module=module).exclude(id=self.instance.id if self.instance else None)
+                if existing_lessons.filter(order=data['order']).exists():
+                    raise serializers.ValidationError("A lesson with this order already exists in this module")
+        return data
 
 class AssignmentSerializer(serializers.ModelSerializer):
     lesson = LessonSerializer(read_only=True)

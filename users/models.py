@@ -17,15 +17,19 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        # Обеспечим, что суперюзер получает роль "admin"
         extra_fields.setdefault('role', 'admin')
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-        return self.create_user(email, password, **extra_fields)
+        if extra_fields.get('role') != 'admin':
+            raise ValueError('Superuser must have role=admin.')
+            
+        user = self.create_user(email, password, **extra_fields)
+        return user
 
 USER_ROLES = [
     ('admin', 'Administrator'),
@@ -77,10 +81,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def save(self, *args, **kwargs):
         if not self.is_superuser:
-            if self.role in ['student', 'teacher']:
-                self.is_staff = False
-            elif self.role == 'admin' and not self.is_staff:
+            if self.role == 'admin':
                 self.is_staff = True
+            elif self.role in ['student', 'teacher']:
+                self.is_staff = False
         self.full_clean()
         super().save(*args, **kwargs)
 

@@ -8,12 +8,18 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from .models import User
 from .serializers import LoginSerializer, RegisterSerializer, UserSerializer, UserDetailSerializer
+from rest_framework import serializers
 
 class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data['user']
+            if not user.is_active:
+                return Response(
+                    {'error': 'Account is inactive'}, 
+                    status=status.HTTP_403_FORBIDDEN
+                )
             token, _ = Token.objects.get_or_create(user=user)
             return Response({'token': token.key})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -22,8 +28,14 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Registration successful'}, status=status.HTTP_201_CREATED)
+            try:
+                serializer.save()
+                return Response(
+                    {'message': 'Registration successful'}, 
+                    status=status.HTTP_201_CREATED
+                )
+            except serializers.ValidationError as e:
+                return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -48,6 +60,10 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserDetailSerializer
 
     def perform_create(self, serializer):
-        logger.info(f"Create new User: {serializer.validated_data.get('email')}")
-        super().perform_create(serializer)
-        logger.info(f"User with email {serializer.validated_data.get('email')} was created.")
+        try:
+            logger.info(f"Create new User: {serializer.validated_data.get('email')}")
+            super().perform_create(serializer)
+            logger.info(f"User with email {serializer.validated_data.get('email')} was created.")
+        except serializers.ValidationError as e:
+            logger.error(f"Error creating user: {e}")
+            raise

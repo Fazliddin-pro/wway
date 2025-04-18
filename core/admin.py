@@ -27,7 +27,7 @@ class AssignmentInline(admin.TabularInline):
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'instructor', 'category', 'level', 'created_at')
+    list_display = ('id', 'title', 'teacher', 'category', 'level', 'created_at')
     list_filter = ('category', 'level')
     search_fields = ('title', 'description')
     ordering = ('-created_at',)

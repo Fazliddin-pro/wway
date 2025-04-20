@@ -10,14 +10,17 @@ dist
 db.sqlite3
 .env
 .env.local
+.env.*
+*.env
 
 venv/
 env/
 .venv/
+.python-version
 
 prod_settings.py
 local_settings.py
-
+test_settings.py
 
 __pycache__/
 */__pycache__/
@@ -25,9 +28,9 @@ __pycache__/
 .pyc
 *.pyc
 
-
-
 log/debug.log
+*.log
+logs/
 
 build
 doc
@@ -38,3 +41,25 @@ Makefile
 doc-dev
 Wway.png
 general.log
+
+media/submissions/test_*
+media/submissions/*.tmp
+media/submissions/*.temp
+
+# IDE specific files
+.vscode/
+*.swp
+*.swo
+*~
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/

@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator
 from .validators import validate_file_size
 
 LESSON_TYPES = [('video', 'Video'), ('text', 'Text')]
-SUBMISSION_STATUSES = [('not_looked', 'Not Looked'), ('in_lookin', 'In Progress'), ('looked', 'Looked')]
+SUBMISSION_STATUSES = [('not_looked', 'Not Looked'), ('in_progress', 'In Progress'), ('looked', 'Looked')]
 PROGRESS_STATUSES = [('not_started', 'Not Started'), ('in_progress', 'In Progress'), ('completed', 'Completed')]
 
 class Course(models.Model):
@@ -15,6 +15,7 @@ class Course(models.Model):
     category = models.CharField("Category", max_length=100)
     level = models.CharField("Level", max_length=50, blank=True, null=True)
     accessibility_features = models.TextField("Accessibility Features", blank=True, null=True)
+    is_active = models.BooleanField("Active", default=True)
     created_at = models.DateTimeField("Created At", auto_now_add=True)
 
     class Meta:
@@ -23,9 +24,9 @@ class Course(models.Model):
         verbose_name_plural = "Courses"
 
     def clean(self):
+        super().clean()
         if not getattr(self.teacher, 'role', None) in ['admin', 'teacher']:
             raise ValidationError("Only admins or teachers can create a course.")
-        super().clean()
 
     def __str__(self):
         return f'{self.category} - {self.title} ({self.level})'
@@ -37,6 +38,7 @@ class Module(models.Model):
     order = models.PositiveSmallIntegerField("Order", default=1, validators=[MinValueValidator(1)])
     start_date = models.DateField("Start Date", blank=True, null=True)
     end_date = models.DateField("End Date", blank=True, null=True)
+    is_active = models.BooleanField("Active", default=True)
 
     class Meta:
         ordering = ['order']
@@ -45,9 +47,9 @@ class Module(models.Model):
         unique_together = ('course', 'order')
 
     def clean(self):
+        super().clean()
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError("Start date cannot be later than end date.")
-        super().clean()
 
     def __str__(self):
         return f'{self.course} - {self.order}. {self.title}'
@@ -60,6 +62,7 @@ class Lesson(models.Model):
     lesson_type = models.CharField("Lesson Type", max_length=10, choices=LESSON_TYPES, default='text')
     duration = models.IntegerField("Duration (minutes)", blank=True, null=True)
     accessibility_features = models.TextField("Accessibility Features", blank=True, null=True)
+    is_active = models.BooleanField("Active", default=True)
 
     class Meta:
         ordering = ['order']
@@ -75,6 +78,7 @@ class Assignment(models.Model):
     title = models.CharField("Assignment Title", max_length=255)
     description = models.TextField("Assignment Description")
     due_date = models.DateField("Due Date", blank=True, null=True)
+    is_active = models.BooleanField("Active", default=True)
 
     class Meta:
         verbose_name = "Assignment"

@@ -18,7 +18,6 @@ class LoginSerializer(serializers.Serializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
-    phone_number = serializers.CharField(required=True, validators=[phone_regex])
 
     class Meta:
         model = User
@@ -57,12 +56,15 @@ class BaseUserSerializer(serializers.ModelSerializer):
 class UserSerializer(BaseUserSerializer):
     password = serializers.CharField(write_only=True, required=False)
 
+    class Meta(BaseUserSerializer.Meta):
+        fields = BaseUserSerializer.Meta.fields + ['password']
+
     def validate_password(self, value):
         if value:
             try:
                 validate_password(value)
             except serializers.ValidationError as e:
-                raise serializers.ValidationError(f"Пароль недостаточно надежный: {e}")
+                raise serializers.ValidationError(f"Password is not strong enough: {e}")
         return value
 
     def create(self, validated_data):

@@ -30,7 +30,6 @@ __pycache__/
 
 log/debug.log
 *.log
-logs/
 
 build
 doc

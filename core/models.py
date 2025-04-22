@@ -14,6 +14,7 @@ class Course(models.Model):
     teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Teacher")
     category = models.CharField("Category", max_length=100)
     level = models.CharField("Level", max_length=50, blank=True, null=True)
+    image = models.ImageField("Course Image", upload_to='course_images/', blank=True, null=True)
     accessibility_features = models.TextField("Accessibility Features", blank=True, null=True)
     is_active = models.BooleanField("Active", default=True)
     created_at = models.DateTimeField("Created At", auto_now_add=True)

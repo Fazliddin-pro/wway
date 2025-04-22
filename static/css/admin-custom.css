@@ -4,7 +4,7 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* Убираем скучные границы */
+/* Remove boring borders */
 fieldset, .module {
     border-radius: 12px;
     border: 1px solid #ddd;
@@ -12,19 +12,19 @@ fieldset, .module {
     background-color: #ffffff;
 }
 
-/* Заголовки секций */
+/* Section headers */
 h1, h2, h3, .module caption {
     font-weight: 600;
-    color: #4F46E5; /* основной фиолетово-синий */
+    color: #4F46E5; /* main purple-blue color */
 }
 
-/* Таблицы */
+/* Tables */
 table {
     border-radius: 12px;
     overflow: hidden;
 }
 
-/* Кнопки */
+/* Buttons */
 button, input[type="submit"], .button {
     background-color: #4F46E5 !important;
     border-radius: 8px !important;
@@ -39,7 +39,7 @@ button:hover, input[type="submit"]:hover, .button:hover {
     background-color: #4338ca !important;
 }
 
-/* Форма ввода */
+/* Input form */
 input[type="text"], input[type="email"], input[type="password"],
 select, textarea {
     border-radius: 8px;
@@ -53,19 +53,19 @@ input:focus, select:focus, textarea:focus {
     outline: none;
 }
 
-/* Шапка админки */
+/* Admin navbar */
 .navbar {
     background-color: #4F46E5 !important;
     border-bottom: none;
 }
 
-/* Лого и бренд */
+/* Logo and brand */
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: bold;
 }
 
-/* Сайдбар */
+/* Sidebar */
 .sidebar {
     background-color: #3730A3 !important;
 }
@@ -81,7 +81,7 @@ input:focus, select:focus, textarea:focus {
     color: #fff !important;
 }
 
-/* Футер */
+/* Footer */
 .footer {
     font-size: 0.85rem;
     text-align: center;
@@ -90,9 +90,9 @@ input:focus, select:focus, textarea:focus {
     color: #9CA3AF;
 }
 
-/* Стили для блока recent actions */
+/* Styles for recent actions block */
 .recent-actions {
-    max-height: 600px;  /* Ограничиваем максимальную высоту */
-    overflow-y: auto;   /* Добавляем вертикальную прокрутку */
-    padding-right: 20px; /* Немного отступа для прокрутки */
+    max-height: 600px;  /* Limit maximum height */
+    overflow-y: auto;   /* Add vertical scrollbar */
+    padding-right: 20px; /* Add some padding for scrolling */
 }

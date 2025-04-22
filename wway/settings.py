@@ -212,7 +212,7 @@ LOGGING = {
     },
 }
 
-# Добавляем обработчики ошибок
+# Add error handlers
 handler404 = 'core.exceptions.handle_404_error'
 handler500 = 'core.exceptions.handle_500_error'
 

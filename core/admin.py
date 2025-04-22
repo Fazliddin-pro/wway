@@ -31,11 +31,11 @@ class AssignmentInline(admin.TabularInline):
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'teacher', 'category', 'level', 'image', 'is_active', 'created_at')
-    list_filter = ('category', 'level', 'is_active', 'created_at')
-    search_fields = ('title', 'description', 'category', 'level')
+    list_filter = ('teacher', 'category', 'level', 'is_active', 'created_at')
+    search_fields = ('id', 'title', 'description', 'category', 'level')
     ordering = ('-created_at',)
     list_editable = ('category', 'level', 'is_active')
-    inlines = [ModuleInline, LessonInline, AssignmentInline]
+    inlines = [ModuleInline]
     fieldsets = (
         ('Basic Information', {
             'fields': ('title', 'description', 'teacher', 'image')
@@ -52,7 +52,7 @@ class ModuleAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description', 'course__title')
     ordering = ('course', 'order')
     list_editable = ('order', 'start_date', 'end_date', 'is_active')
-    inlines = [LessonInline, AssignmentInline]
+    inlines = [LessonInline]
     fieldsets = (
         ('Basic Information', {
             'fields': ('title', 'description', 'course')

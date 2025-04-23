@@ -12,7 +12,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'title', 'description', 'category', 'level', 'accessibility_features', 'is_active', 'created_at', 'teacher']
+        fields = ['id', 'title', 'description', 'category', 'level', 'image', 'accessibility_features', 'is_active', 'created_at', 'teacher']
         read_only_fields = ['id', 'created_at', 'teacher']
 
     def validate(self, attrs):

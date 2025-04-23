@@ -49,10 +49,31 @@ class CourseViewSet(viewsets.ModelViewSet):
                 category=serializer.validated_data['category']
             ).exists():
                 raise ValidationError("A course with this title already exists in this category")
+            
+            # Handle image upload
+            image = serializer.validated_data.get('image')
+            if image:
+                # You can add additional image processing here if needed
+                pass
+                
             serializer.save(teacher=self.request.user)
             logger.info(f"Course created: {serializer.instance.title} by {self.request.user.email}")
         except Exception as e:
             logger.error(f"Error creating course: {str(e)}")
+            raise
+
+    def perform_update(self, serializer):
+        try:
+            # Handle image update
+            image = serializer.validated_data.get('image')
+            if image:
+                # You can add additional image processing here if needed
+                pass
+                
+            serializer.save()
+            logger.info(f"Course updated: {serializer.instance.title}")
+        except Exception as e:
+            logger.error(f"Error updating course: {str(e)}")
             raise
 
 class ModuleViewSet(viewsets.ModelViewSet):

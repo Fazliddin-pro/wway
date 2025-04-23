@@ -34,7 +34,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_filter = ('teacher', 'category', 'level', 'is_active', 'created_at')
     search_fields = ('id', 'title', 'description', 'category', 'level')
     ordering = ('-created_at',)
-    list_editable = ('category', 'level', 'is_active')
+    list_editable = ('category', 'level', 'is_active', 'image')
     inlines = [ModuleInline]
     fieldsets = (
         ('Basic Information', {

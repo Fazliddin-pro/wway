@@ -7,7 +7,6 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 pillow = "*"
-psycopg2-binary = "*"
 django-cors-headers = "*"
 django-debug-toolbar = "*"
 django-filter = "*"
@@ -17,6 +16,9 @@ gunicorn = "*"
 whitenoise = "*"
 dj-database-url = "*"
 django-jazzmin = "*"
+boto3 = "*"
+django-storages = {extras = ["boto3"], version = "*"}
+psycopg2-binary = "*"
 
 [dev-packages]
 

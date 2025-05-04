@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from .validators import validate_file_size
+from .validators import validate_file_size, validate_image_file_size
 
 LESSON_TYPES = [('video', 'Video'), ('text', 'Text')]
 SUBMISSION_STATUSES = [('not_looked', 'Not Looked'), ('in_progress', 'In Progress'), ('looked', 'Looked')]
@@ -14,7 +14,8 @@ class Course(models.Model):
     teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Teacher")
     category = models.CharField("Category", max_length=100)
     level = models.CharField("Level", max_length=50, blank=True, null=True)
-    image = models.ImageField("Course Image", upload_to='course_images/', blank=True, null=True)
+    image = models.ImageField("Course Image", upload_to='course_images/', blank=True, null=True,
+                              validators=[validate_image_file_size])
     accessibility_features = models.TextField("Accessibility Features", blank=True, null=True)
     is_active = models.BooleanField("Active", default=True)
     created_at = models.DateTimeField("Created At", auto_now_add=True)
